@@ -1,0 +1,51 @@
+// Specify the database connection provider (PostgreSQL for Neon)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // The Neon connection string stored securely in your .env
+}
+
+// Prisma Client generator - generates TypeScript client to interact with DB
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Models define tables in your database with fields (columns)
+
+// User model - represents an app user (for now minimal, can expand later with auth)
+model User {
+  id        String    @id @default(uuid())         // UUID string ID, auto-generated
+  email     String    @unique                      // Email address, must be unique
+  workouts  Workout[]                                // One-to-many relation: one user can have many workouts
+  createdAt DateTime  @default(now())               // Timestamp when user was created
+}
+
+// Workout model - represents a workout session
+model Workout {
+  id         Int        @id @default(autoincrement())
+  date       DateTime   @default(now())             // Date/time of workout
+  user       User       @relation(fields: [userId], references: [id]) // Link to User
+  userId     String                                          // Foreign key to User table
+  name       String                                       // Name of the workout
+  exercises  Exercise[]                                  // One workout has many exercises
+  notes      String?                                    // Optional notes about the workout
+}
+
+// Exercise model - represents a specific exercise done in a workout
+model Exercise {
+  id          Int       @id @default(autoincrement())
+  workout     Workout   @relation(fields: [workoutId], references: [id]) // Link to Workout
+  workoutId   Int                                            // Foreign key
+  name        String                                         // Exercise name, e.g. "Bench Press"
+  sets        Set[]                                          // One exercise has many sets
+  order       Int                                            // Order in workout (for sorting exercises)
+}
+
+// Set model - represents a single set of reps and weight for an exercise
+model Set {
+  id          Int       @id @default(autoincrement())
+  exercise    Exercise  @relation(fields: [exerciseId], references: [id]) // Link to Exercise
+  exerciseId  Int                                            // Foreign key
+  reps        Int                                            // Number of repetitions performed
+  weight      Float?                                         // Weight used in kg or lbs, optional if bodyweight exercise
+  order       Int                                            // Order in exercise (for sorting sets)
+}
