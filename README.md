@@ -6,12 +6,12 @@ The project is structured into a **backend** (Next.js + Prisma + PostgreSQL) and
 ---
 
 ## Project Structure
-
+```bash
 LiftLog
 ├─ backend # Next.js API + Prisma
 ├─ frontend # Expo + React Native app
 └─ shared # Shared TypeScript types
-
+```
 ---
 
 ## Backend
