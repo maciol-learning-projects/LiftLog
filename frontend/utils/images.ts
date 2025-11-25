@@ -1,4 +1,4 @@
-import { Exercise } from "../services/api";
+import { Exercise } from "../../shared/types";
 // Function to get full exercise image URL
 const getExerciseImageUrl = (exercise: Exercise): string | null => {
   if (!exercise.images || exercise.images.length === 0) {

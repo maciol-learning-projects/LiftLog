@@ -13,9 +13,14 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         title="Workouts"
         onPress={() => navigation.navigate("Workouts")}
       />
+      <Button
+        title="Workout History"
+        onPress={() => navigation.navigate("WorkoutHistory")}
+      />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

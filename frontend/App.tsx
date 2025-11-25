@@ -6,12 +6,17 @@ import HomeScreen from "./screens/HomeScreen";
 import WorkoutListScreen from "./screens/WorkoutListScreen";
 import WorkoutDetailsScreen from "./screens/WorkoutDetailsScreen";
 import ExerciseBrowserScreen from "./screens/ExerciseBrowserScreen";
+import ActiveWorkoutScreen from "./screens/ActiveWorkoutScreen";
+import { Workout } from "../shared/types";
+import WorkoutHistoryScreen from "./screens/WorkoutHistoryScreen";
 
 type RootStackParamList = {
   Home: undefined;
   Workouts: undefined;
   WorkoutDetails: { workoutId: number };
   ExerciseBrowser: { workoutId: number; existingExercises: number[] }
+  ActiveWorkout: { workout: Workout };
+  WorkoutHistory: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -24,7 +29,7 @@ export default function App() {
         <Stack.Screen
           name="Workouts"
           component={WorkoutListScreen}
-          options={{ title: "Your Workouts" }}
+          options={{ title: "Your Workouts", headerLeft: () => null, gestureEnabled: false }}
         />
         <Stack.Screen
           name="WorkoutDetails"
@@ -35,6 +40,18 @@ export default function App() {
           name="ExerciseBrowser"
           component={ExerciseBrowserScreen}
           options={{ title: "Browse Exercises" }}
+        />
+        <Stack.Screen
+          name="ActiveWorkout"
+          component={ActiveWorkoutScreen}
+          options={{ title: "Active Workout" }}
+        />
+        <Stack.Screen
+          name="WorkoutHistory"
+          component={WorkoutHistoryScreen}
+          options={{ 
+            title: "Workout History",
+           }}
         />
       </Stack.Navigator>
     </NavigationContainer>

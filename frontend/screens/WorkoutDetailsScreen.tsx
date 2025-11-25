@@ -11,8 +11,10 @@ import {
   PanResponder,
   Dimensions
 } from "react-native";
-import { fetchWorkoutById, Workout, Exercise, removeExerciseFromWorkout, updateExerciseOrder } from "../services/api";
+import { fetchWorkoutById, removeExerciseFromWorkout, updateExerciseOrder } from "../services/api";
+import { Workout, Exercise } from "../../shared/types";
 import { getExerciseImageUrl } from "../utils/images";
+import SetManager from '../components/SetManager';
 
 interface WorkoutDetailScreenProps {
   route: {
@@ -346,20 +348,10 @@ export default function WorkoutDetailScreen({ route, navigation }: WorkoutDetail
             )}
 
             {/* Sets Information */}
-            {exercise.sets && exercise.sets.length > 0 ? (
-              <View style={styles.setsContainer}>
-                <Text style={styles.sectionTitle}>Sets</Text>
-                {exercise.sets.map((set, idx) => (
-                  <Text key={set.id} style={styles.setText}>
-                    Set {idx + 1}: {set.reps} reps {set.weight ? `with ${set.weight}kg` : '(body weight)'}
-                  </Text>
-                ))}
-              </View>
-            ) : (
-              <View style={styles.noDataContainer}>
-                <Text style={styles.noDataText}>No sets added yet</Text>
-              </View>
-            )}
+            <SetManager 
+              exercise={exercise} 
+              onSetsUpdate={loadWorkout} 
+            />
 
             {/* Exercise Metadata */}
             <View style={styles.metadataContainer}>

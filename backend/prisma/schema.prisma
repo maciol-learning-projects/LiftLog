@@ -1,51 +1,86 @@
-// Specify the database connection provider (PostgreSQL for Neon)
+// Database connection to PostgreSQL (Neon)
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") // The Neon connection string stored securely in your .env
+  url      = env("DATABASE_URL")
 }
 
-// Prisma Client generator - generates TypeScript client to interact with DB
+// Prisma Client generator for TypeScript
 generator client {
   provider = "prisma-client-js"
 }
 
-// Models define tables in your database with fields (columns)
+// Workout status enum - tracks the state of a workout
+enum WorkoutStatus {
+  DRAFT       // Workout is being planned
+  IN_PROGRESS // Workout is currently active
+  COMPLETED   // Workout finished successfully
+  CANCELLED   // Workout was cancelled
+}
 
-// User model - represents an app user (for now minimal, can expand later with auth)
+// User model - represents an app user
 model User {
-  id        String    @id @default(uuid())         // UUID string ID, auto-generated
-  email     String    @unique                      // Email address, must be unique
-  workouts  Workout[]                                // One-to-many relation: one user can have many workouts
-  createdAt DateTime  @default(now())               // Timestamp when user was created
+  id        String    @id @default(uuid())
+  email     String    @unique
+  workouts  Workout[]
+  workoutHistories WorkoutHistory[]
+  createdAt DateTime  @default(now())
 }
 
-// Workout model - represents a workout session
+// Workout model - represents a training session
 model Workout {
-  id         Int        @id @default(autoincrement())
-  date       DateTime   @default(now())             // Date/time of workout
-  user       User       @relation(fields: [userId], references: [id]) // Link to User
-  userId     String                                          // Foreign key to User table
-  name       String                                       // Name of the workout
-  exercises  Exercise[]                                  // One workout has many exercises
-  notes      String?                                    // Optional notes about the workout
+  id          Int            @id @default(autoincrement())
+  date        DateTime       @default(now())
+  user        User           @relation(fields: [userId], references: [id])
+  userId      String
+  name        String
+  exercises   Exercise[]
+  notes       String?
+  
+  // Workout tracking fields
+  status      WorkoutStatus  @default(DRAFT)
+  startedAt   DateTime?
+  completedAt DateTime?
+  duration    Int?
 }
 
-// Exercise model - represents a specific exercise done in a workout
+// Exercise model - represents a specific exercise in a workout
 model Exercise {
   id          Int       @id @default(autoincrement())
-  workout     Workout   @relation(fields: [workoutId], references: [id]) // Link to Workout
-  workoutId   Int                                            // Foreign key
-  name        String                                         // Exercise name, e.g. "Bench Press"
-  sets        Set[]                                          // One exercise has many sets
-  order       Int                                            // Order in workout (for sorting exercises)
+  workout     Workout   @relation(fields: [workoutId], references: [id],  onDelete: Cascade)
+  workoutId   Int
+  name        String
+  sets        Set[]
+  order       Int
 }
 
-// Set model - represents a single set of reps and weight for an exercise
+// Set model - represents a single set with reps and weight
 model Set {
   id          Int       @id @default(autoincrement())
-  exercise    Exercise  @relation(fields: [exerciseId], references: [id]) // Link to Exercise
-  exerciseId  Int                                            // Foreign key
-  reps        Int                                            // Number of repetitions performed
-  weight      Float?                                         // Weight used in kg or lbs, optional if bodyweight exercise
-  order       Int                                            // Order in exercise (for sorting sets)
+  exercise    Exercise  @relation(fields: [exerciseId], references: [id],  onDelete: Cascade)
+  exerciseId  Int
+  reps        Int
+  weight      Float?
+  order       Int
+  
+  // Set tracking fields
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  notes       String?
+}
+
+model WorkoutHistory {
+  id          Int      @id @default(autoincrement())
+  workoutId   Int
+  name        String
+  userId      String
+  duration    Int?
+  completedAt DateTime @default(now())
+  exerciseCount Int
+  totalSets   Int
+  completedSets Int
+  notes       String?
+
+  user        User     @relation(fields: [userId], references: [id])
+  
+  @@map("workout_histories")
 }

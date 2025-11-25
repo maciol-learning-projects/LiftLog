@@ -1,4 +1,4 @@
-import { Exercise } from "../services/api";
+import { Exercise } from "../../shared/types";
 
 const muscleGroupMap: { [key: string]: string } = {
   quadriceps: 'Legs',
