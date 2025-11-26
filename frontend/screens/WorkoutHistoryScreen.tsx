@@ -26,7 +26,7 @@ export default function WorkoutHistoryScreen({ navigation }: WorkoutHistoryScree
   const loadWorkouts = async () => {
     setLoading(true);
     try {
-      const workoutHistory = await fetchWorkoutHistory(USER_ID);
+      const workoutHistory = await fetchWorkoutHistory();
       setWorkouts(workoutHistory);
     } catch (err: any) {
       console.error("Error loading workout history:", err);

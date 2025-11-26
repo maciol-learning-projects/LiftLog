@@ -4,8 +4,7 @@ import { View, Text, FlatList, Button, TextInput, StyleSheet, Alert, TouchableOp
 import { fetchWorkouts, createWorkout } from "../services/api";
 import { Workout } from "../../shared/types";
 import { WorkoutStatus } from "../utils/workoutStatus";
-
-const USER_ID = "4d378dda-8f92-4c4a-8e2d-659eff84f038"; // Make sure this user exists in your database!
+import FloatingInputContainer from "../components/FloatingInputContainer";
 
 interface WorkoutListScreenProps {
   navigation?: any; // or use proper type from React Navigation
@@ -19,8 +18,8 @@ export default function WorkoutListScreen({ navigation }: WorkoutListScreenProps
   const loadWorkouts = async () => {
     setLoading(true);
     try {
-      console.log("Loading workouts for user:", USER_ID);
-      const allWorkouts = await fetchWorkouts(USER_ID);
+      console.log("Loading workouts for user:");
+      const allWorkouts = await fetchWorkouts();
       // Filter out completed workouts - only show DRAFT and IN_PROGRESS
       const activeWorkouts = allWorkouts.filter(
         workout => workout.status === WorkoutStatus.DRAFT || workout.status === WorkoutStatus.IN_PROGRESS
@@ -42,7 +41,7 @@ export default function WorkoutListScreen({ navigation }: WorkoutListScreenProps
     }
     
     try {
-      await createWorkout(newWorkoutName, USER_ID);
+      await createWorkout(newWorkoutName);
       setNewWorkoutName("");
       await loadWorkouts(); // refresh list
     } catch (err: any) {
@@ -134,16 +133,17 @@ export default function WorkoutListScreen({ navigation }: WorkoutListScreenProps
           !loading ? <Text style={styles.empty}>No workouts found</Text> : null
         }
       />
-      
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="New workout name"
-          value={newWorkoutName}
-          onChangeText={setNewWorkoutName}
-        />
-        <Button title="Add Workout" onPress={handleAddWorkout} />
-      </View>
+      <FloatingInputContainer offset={20}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="New workout name"
+            value={newWorkoutName}
+            onChangeText={setNewWorkoutName}
+          />
+          <Button title="Add Workout" onPress={handleAddWorkout} />
+        </View>
+      </FloatingInputContainer>
     </View>
   );
 }

@@ -21,9 +21,14 @@ enum WorkoutStatus {
 model User {
   id        String    @id @default(uuid())
   email     String    @unique
+  password  String    // hashed with bcrypt
+  name      String?   // ADDED: User's display name
   workouts  Workout[]
   workoutHistories WorkoutHistory[]
   createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt  // ADDED: Track updates
+
+  @@map("users")
 }
 
 // Workout model - represents a training session
@@ -40,23 +45,27 @@ model Workout {
   status      WorkoutStatus  @default(DRAFT)
   startedAt   DateTime?
   completedAt DateTime?
-  duration    Int?
+  duration    Int?           // in seconds
+
+  @@map("workouts")
 }
 
 // Exercise model - represents a specific exercise in a workout
 model Exercise {
   id          Int       @id @default(autoincrement())
-  workout     Workout   @relation(fields: [workoutId], references: [id],  onDelete: Cascade)
+  workout     Workout   @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   workoutId   Int
   name        String
   sets        Set[]
   order       Int
+
+  @@map("exercises")
 }
 
 // Set model - represents a single set with reps and weight
 model Set {
   id          Int       @id @default(autoincrement())
-  exercise    Exercise  @relation(fields: [exerciseId], references: [id],  onDelete: Cascade)
+  exercise    Exercise  @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId  Int
   reps        Int
   weight      Float?
@@ -66,14 +75,17 @@ model Set {
   completed   Boolean   @default(false)
   completedAt DateTime?
   notes       String?
+
+  @@map("sets")
 }
 
+// WorkoutHistory model - represents completed workout snapshots
 model WorkoutHistory {
   id          Int      @id @default(autoincrement())
   workoutId   Int
   name        String
   userId      String
-  duration    Int?
+  duration    Int?           // in seconds
   completedAt DateTime @default(now())
   exerciseCount Int
   totalSets   Int

@@ -12,7 +12,8 @@ import {
   ScrollView,
   Image
 } from "react-native";
-import { Exercise, addExerciseToWorkout } from "../services/api";
+import { addExerciseToWorkout } from "../services/api";
+import { Exercise } from "../../shared/types";
 import { getPrimaryMuscleGroup } from "../utils/muscleGroups";
 import { getExerciseImageUrl } from "../utils/images";
 
@@ -179,6 +180,14 @@ export default function ExerciseBrowserScreen({ route, navigation }: ExerciseBro
             navigation.navigate("WorkoutDetails", { 
               workoutId,
               refresh: true
+            });
+            navigation.reset({
+              index: 2, // This keeps WorkoutHistory as current, Home as previous
+              routes: [
+                { name: 'Home' },
+                { name: 'Workouts' },
+                { name: 'WorkoutDetails', params: { workoutId, refresh: true } }
+              ],
             });
           }
         }}]

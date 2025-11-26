@@ -149,28 +149,56 @@ The app will fetch workouts from BACKEND_URL and allow creation of new workouts.
 Shared Types
 The shared/types.ts folder contains TypeScript interfaces for shared data models like Workout, Exercise, Set, and User. Both frontend and backend import from this folder to ensure type safety.
 
-Tools & Libraries Used
+🛠️ Tools & Libraries Used
 Backend
 Next.js (App Router + API routes)
 
-Prisma ORM
+Prisma ORM (Database client & migrations)
 
-PostgreSQL (Neon)
+PostgreSQL (Neon - serverless PostgreSQL)
 
-dotenv (environment variable management)
+JWT (JSON Web Tokens for authentication)
 
-TypeScript
+bcrypt (Password hashing)
+
+cookie (HTTP cookie handling)
+
+dotenv (Environment variable management)
+
+TypeScript (Type safety)
 
 Frontend
-Expo + React Native
+Expo + React Native (Cross-platform mobile development)
 
-TypeScript
+TypeScript (Type safety)
 
-React Navigation (if using navigation)
+React Navigation (Navigation handling)
 
-Expo Router
+Expo Router (File-based routing)
 
 React Native Paper (UI components)
+
+Axios (HTTP client for API calls)
+
+React Context (State management for auth)
+
+Security Features
+JWT with HttpOnly cookies (Secure authentication)
+
+Password hashing with bcrypt
+
+CORS configuration (Cross-origin resource sharing)
+
+Input validation (Request data sanitization)
+
+Development & Deployment
+Git (Version control)
+
+Neon (PostgreSQL hosting)
+
+Vercel (Backend deployment - planned)
+
+Expo EAS (App building & deployment - planned)
 
 Notes
 The backend URL is stored in an environment variable and used in the frontend to prevent exposing sensitive info.
